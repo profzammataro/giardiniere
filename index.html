@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verde & Cura — Archivio Lavori</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Verde & Cura">
 <meta name="theme-color" content="#1a3a2a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -635,10 +641,101 @@
     .stats-bar { gap: 1rem; }
   }
 
+  /* ── ROTATE OVERLAY ── */
+  #rotateOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--green-deep);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+    padding: 2rem;
+  }
 
+  /* Mostra solo su mobile in portrait */
+  @media (max-width: 768px) and (orientation: portrait) {
+    #rotateOverlay { display: flex; }
+  }
+
+  .rotate-phone {
+    width: 72px;
+    height: 72px;
+    animation: rotate-hint 2.2s ease-in-out infinite;
+  }
+
+  @keyframes rotate-hint {
+    0%   { transform: rotate(0deg);  }
+    30%  { transform: rotate(0deg);  }
+    60%  { transform: rotate(90deg); }
+    90%  { transform: rotate(90deg); }
+    100% { transform: rotate(0deg);  }
+  }
+
+  .rotate-text {
+    text-align: center;
+    color: var(--cream);
+  }
+
+  .rotate-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--cream);
+  }
+
+  .rotate-text span {
+    font-size: 0.85rem;
+    color: var(--green-pale);
+    line-height: 1.6;
+  }
+
+  .rotate-leaves {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .rotate-leaf {
+    position: absolute;
+    opacity: 0.07;
+  }
 </style>
 </head>
 <body>
+
+<!-- ROTATE OVERLAY -->
+<div id="rotateOverlay">
+  <div class="rotate-leaves">
+    <svg class="rotate-leaf" style="width:220px;top:-40px;left:-60px;transform:rotate(-20deg)" viewBox="0 0 48 48" fill="none">
+      <path d="M24 2C24 2,44 12,44 28C44 38,35 46,24 48C13 46,4 38,4 28C4 12,24 2,24 2Z" fill="#a8c5a0"/>
+    </svg>
+    <svg class="rotate-leaf" style="width:160px;bottom:-30px;right:-40px;transform:rotate(40deg)" viewBox="0 0 48 48" fill="none">
+      <path d="M24 2C24 2,44 12,44 28C44 38,35 46,24 48C13 46,4 38,4 28C4 12,24 2,24 2Z" fill="#4a8c5c"/>
+    </svg>
+  </div>
+
+  <!-- Icona telefono animata -->
+  <svg class="rotate-phone" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Telefono in portrait -->
+    <rect x="20" y="8" width="32" height="52" rx="5" stroke="#a8c5a0" stroke-width="3" fill="none"/>
+    <circle cx="36" cy="52" r="3" fill="#a8c5a0" opacity="0.6"/>
+    <rect x="30" y="12" width="12" height="2" rx="1" fill="#a8c5a0" opacity="0.5"/>
+    <!-- Freccia di rotazione verso destra (portrait → landscape) -->
+    <path d="M10 38 A26 26 0 0 0 36 64" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <polyline points="30,61 36,64 34,70" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+
+  <div class="rotate-text">
+    <strong>Ruota il dispositivo</strong>
+    <span>Per vedere tutti i campi<br>usa l'app in modalità orizzontale</span>
+  </div>
+</div>
 
 <header>
   <div class="logo-area" id="logoArea" title="Clicca 5 volte per attivare la modalità editing">
@@ -680,6 +777,11 @@
     <span class="stat-label">Incasso totale</span>
     <span class="stat-value money" id="statRevenue">€ 0,00</span>
   </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-label">Netto totale</span>
+    <span class="stat-value money" id="statNet">€ 0,00</span>
+  </div>
 </div>
 
 <main>
@@ -712,6 +814,8 @@
           <th>Tipologia</th>
           <th>Stato</th>
           <th class="money-col">Incasso</th>
+          <th class="money-col">Spese</th>
+          <th class="money-col">Netto</th>
           <th id="actionsHeader" style="display:none; width:90px;"></th>
         </tr>
       </thead>
@@ -749,10 +853,20 @@
           <option value="completato">Completato</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-row">
+        <div class="form-group">
           <label>Incasso (€)</label>
-          <input type="number" id="fIncasso" placeholder="0,00" min="0" step="0.01" />
+          <input type="number" id="fIncasso" placeholder="0,00" min="0" step="0.01" oninput="updateNetPreview()" />
         </div>
+        <div class="form-group">
+          <label>Spese vive (€)</label>
+          <input type="number" id="fSpese" placeholder="0,00" min="0" step="0.01" oninput="updateNetPreview()" />
+        </div>
+      </div>
+      <div class="calc-preview">
+        <span class="calc-label">💰 Incasso netto</span>
+        <span class="calc-value" id="netPreview">€ 0,00</span>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('formModal')">Annulla</button>
@@ -833,7 +947,7 @@
   function showLoadingState(loading) {
     const tbody = document.getElementById('tableBody');
     if (loading) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-light);font-size:0.9rem;">
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--text-light);font-size:0.9rem;">
         <span style="display:inline-flex;align-items:center;gap:0.6rem;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -899,6 +1013,7 @@
     } else {
       empty.style.display = 'none';
       tbody.innerHTML = filtered.map(r => {
+        const netto = (r.incasso || 0) - (r.spese || 0);
         const key = r._key;
         const actionsCol = editMode ? `
           <td>
@@ -914,6 +1029,8 @@
             <td><div class="work-type" title="${escHtml(r.tipologia)}">${escHtml(r.tipologia)}</div></td>
             <td><span class="status ${r.stato}">${statusLabel[r.stato]}</span></td>
             <td class="money-col money-pos">${fmt(r.incasso)}</td>
+            <td class="money-col money-neg">${fmt(r.spese)}</td>
+            <td class="money-col money-net">${fmt(netto)}</td>
             ${actionsCol}
           </tr>
         `;
@@ -932,10 +1049,12 @@
     const total = records.length;
     const completed = records.filter(r => r.stato === 'completato').length;
     const revenue = records.reduce((s, r) => s + (r.incasso || 0), 0);
+    const net = records.reduce((s, r) => s + ((r.incasso || 0) - (r.spese || 0)), 0);
 
     document.getElementById('statTotal').textContent = total;
     document.getElementById('statCompleted').textContent = completed;
     document.getElementById('statRevenue').textContent = fmt(revenue);
+    document.getElementById('statNet').textContent = fmt(net);
   }
 
   // ─── FILTER ─────────────────────────────────────────────────
@@ -995,6 +1114,8 @@
     document.getElementById('fTipologia').value = '';
     document.getElementById('fStato').value = 'da-iniziare';
     document.getElementById('fIncasso').value = '';
+    document.getElementById('fSpese').value = '';
+    updateNetPreview();
     openModal('formModal');
     setTimeout(() => document.getElementById('fCliente').focus(), 300);
   }
@@ -1008,6 +1129,8 @@
     document.getElementById('fTipologia').value = rec.tipologia;
     document.getElementById('fStato').value = rec.stato;
     document.getElementById('fIncasso').value = rec.incasso || '';
+    document.getElementById('fSpese').value = rec.spese || '';
+    updateNetPreview();
     openModal('formModal');
   }
 
@@ -1050,6 +1173,7 @@
       tipologia: document.getElementById('fTipologia').value.trim(),
       stato: document.getElementById('fStato').value,
       incasso: parseFloat(document.getElementById('fIncasso').value) || 0,
+      spese: parseFloat(document.getElementById('fSpese').value) || 0,
     };
 
     const btn = document.querySelector('#formModal .btn-save');
@@ -1085,6 +1209,15 @@
     }
   }
 
+  // ─── NET PREVIEW ────────────────────────────────────────────
+  function updateNetPreview() {
+    const inc = parseFloat(document.getElementById('fIncasso').value) || 0;
+    const spe = parseFloat(document.getElementById('fSpese').value) || 0;
+    const net = inc - spe;
+    document.getElementById('netPreview').textContent = fmt(net);
+    document.getElementById('netPreview').style.color = net >= 0 ? 'var(--green-deep)' : 'var(--red-soft)';
+  }
+
   // ─── TOAST ──────────────────────────────────────────────────
   let toastTimer;
   function showToast(msg) {
@@ -1093,6 +1226,15 @@
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ─── SERVICE WORKER ─────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW registrato:', reg.scope))
+        .catch(err => console.warn('SW errore:', err));
+    });
   }
 
 
@@ -1104,6 +1246,7 @@
   window.closeModal = closeModal;
   window.saveRecord = saveRecord;
   window.confirmDelete = confirmDelete;
+  window.updateNetPreview = updateNetPreview;
   window.deactivateEditMode = deactivateEditMode;
 </script>
 </body>
