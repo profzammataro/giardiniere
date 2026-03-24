@@ -1068,9 +1068,10 @@
     btn.disabled = false;
 
     if (ok) {
-      closeModal('formModal');
-      showToast(editingId ? '✅ Lavoro aggiornato' : '✅ Lavoro aggiunto');
+      const wasEditing = !!editingId;
       editingId = null;
+      closeModal('formModal');
+      showToast(wasEditing ? '✅ Lavoro aggiornato' : '✅ Lavoro aggiunto');
     }
   }
 
@@ -1119,7 +1120,6 @@
   window.closeModal = closeModal;
   window.saveRecord = saveRecord;
   window.confirmDelete = confirmDelete;
-  window.updateNetPreview = updateNetPreview;
   window.deactivateEditMode = deactivateEditMode;
 </script>
 </body>
