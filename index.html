@@ -4,13 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verde & Cura — Archivio Lavori</title>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Verde & Cura">
 <meta name="theme-color" content="#1a3a2a">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -839,7 +833,7 @@
   function showLoadingState(loading) {
     const tbody = document.getElementById('tableBody');
     if (loading) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--text-light);font-size:0.9rem;">
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-light);font-size:0.9rem;">
         <span style="display:inline-flex;align-items:center;gap:0.6rem;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -1068,10 +1062,9 @@
     btn.disabled = false;
 
     if (ok) {
-      const wasEditing = !!editingId;
-      editingId = null;
       closeModal('formModal');
-      showToast(wasEditing ? '✅ Lavoro aggiornato' : '✅ Lavoro aggiunto');
+      showToast(editingId ? '✅ Lavoro aggiornato' : '✅ Lavoro aggiunto');
+      editingId = null;
     }
   }
 
@@ -1100,15 +1093,6 @@
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
-  }
-
-  // ─── SERVICE WORKER ─────────────────────────────────────────
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('SW registrato:', reg.scope))
-        .catch(err => console.warn('SW errore:', err));
-    });
   }
 
 
