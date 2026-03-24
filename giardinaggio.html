@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verde & Cura — Archivio Lavori</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Verde & Cura">
+<meta name="theme-color" content="#1a3a2a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a3a2a;
+    --green-mid: #2d5a3d;
+    --green-light: #4a8c5c;
+    --green-pale: #a8c5a0;
+    --green-wash: #e8f0e4;
+    --earth: #8b6f47;
+    --earth-light: #c4a882;
+    --cream: #f5f0e8;
+    --cream-dark: #ede5d5;
+    --gold: #c9a84c;
+    --red-soft: #c0392b;
+    --text-dark: #1a2a1e;
+    --text-mid: #4a5e4f;
+    --text-light: #7a9080;
+    --shadow: rgba(26,58,42,0.12);
+    --shadow-deep: rgba(26,58,42,0.22);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(74,140,92,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(139,111,71,0.06) 0%, transparent 50%);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--green-deep);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px var(--shadow-deep);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .logo-area:hover .logo-icon { transform: rotate(5deg) scale(1.05); }
+
+  .logo-svg { width: 100%; height: 100%; }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .logo-sub {
+    font-size: 0.7rem;
+    color: var(--green-pale);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .mode-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .mode-badge.read {
+    background: rgba(168,197,160,0.15);
+    color: var(--green-pale);
+    border: 1px solid rgba(168,197,160,0.25);
+  }
+
+  .mode-badge.edit {
+    background: rgba(201,168,76,0.2);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    animation: pulse-gold 2s ease infinite;
+  }
+
+  @keyframes pulse-gold {
+    0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(201,168,76,0); }
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: blink 2s ease infinite;
+  }
+
+  .mode-badge.read .dot { animation: none; }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--green-mid);
+    padding: 0.7rem 2rem;
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--cream);
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--green-pale);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+  }
+
+  .stat-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .stat-value.positive { color: #7ec8a0; }
+  .stat-value.money { color: var(--gold); font-family: 'Playfair Display', serif; }
+
+  .stat-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(168,197,160,0.25);
+  }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--green-deep);
+    font-weight: 400;
+  }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--green-pale);
+    background: transparent;
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 400;
+  }
+
+  .filter-btn:hover { border-color: var(--green-light); color: var(--green-mid); }
+  .filter-btn.active {
+    background: var(--green-deep);
+    border-color: var(--green-deep);
+    color: var(--cream);
+  }
+
+  /* ADD BUTTON */
+  .btn-add {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.4rem;
+    background: var(--green-deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .btn-add:hover { background: var(--green-mid); transform: translateY(-1px); box-shadow: 0 4px 14px var(--shadow-deep); }
+
+  /* TABLE */
+  .table-wrapper {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px var(--shadow);
+    overflow: hidden;
+    border: 1px solid rgba(74,140,92,0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background: var(--green-deep);
+  }
+
+  th {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--green-pale);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  th.money-col { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--green-wash);
+    transition: background 0.15s ease;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--green-wash); }
+
+  td {
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    vertical-align: middle;
+  }
+
+  td.money-col { text-align: right; font-family: 'DM Mono', monospace; }
+
+  .client-name {
+    font-weight: 500;
+    color: var(--green-deep);
+    font-size: 0.92rem;
+  }
+
+  .work-type {
+    color: var(--text-mid);
+    font-size: 0.84rem;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* STATUS BADGE */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .status::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .status.da-iniziare {
+    background: rgba(201,168,76,0.12);
+    color: #8a6f20;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+
+  .status.da-completare {
+    background: rgba(74,140,92,0.12);
+    color: #2d6e44;
+    border: 1px solid rgba(74,140,92,0.3);
+  }
+
+  .status.completato {
+    background: rgba(26,58,42,0.1);
+    color: var(--green-deep);
+    border: 1px solid rgba(26,58,42,0.2);
+  }
+
+  .money-pos { color: #2d6e44; font-weight: 500; }
+  .money-neg { color: var(--red-soft); }
+  .money-net { color: var(--green-deep); font-weight: 600; }
+
+  /* ACTION BUTTONS */
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-icon {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.15s ease;
+    font-size: 0.85rem;
+  }
+
+  .btn-edit { border-color: rgba(74,140,92,0.3); color: var(--green-mid); }
+  .btn-edit:hover { background: var(--green-wash); border-color: var(--green-mid); }
+
+  .btn-delete { border-color: rgba(192,57,43,0.2); color: var(--red-soft); }
+  .btn-delete:hover { background: rgba(192,57,43,0.08); border-color: var(--red-soft); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-light);
+  }
+
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+  .empty-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-mid); }
+  .empty-sub { font-size: 0.85rem; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,42,30,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(26,42,30,0.35);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s ease;
+    overflow: hidden;
+  }
+
+  .modal-overlay.active .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-header {
+    background: var(--green-deep);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--cream);
+    font-weight: 400;
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(168,197,160,0.3);
+    background: transparent;
+    color: var(--green-pale);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+  }
+
+  .modal-close:hover { background: rgba(168,197,160,0.15); color: var(--cream); }
+
+  .modal-body { padding: 2rem; }
+
+  .form-group {
+    margin-bottom: 1.3rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    transition: all 0.15s ease;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--green-light);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(74,140,92,0.1);
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .calc-preview {
+    background: var(--green-wash);
+    border: 1.5px solid var(--green-pale);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .calc-label { font-size: 0.8rem; color: var(--text-mid); font-weight: 500; }
+  .calc-value { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green-deep); font-weight: 600; }
+
+  .modal-footer {
+    padding: 1rem 2rem 1.5rem;
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    padding: 0.65rem 1.4rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-cancel:hover { border-color: var(--green-pale); color: var(--text-dark); }
+
+  .btn-save {
+    padding: 0.65rem 1.8rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--green-deep);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .btn-save:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+  /* CONFIRM MODAL */
+  .confirm-modal { max-width: 380px; }
+
+  .confirm-body {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .confirm-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .confirm-text { font-size: 0.95rem; color: var(--text-mid); line-height: 1.6; }
+  .confirm-name { font-weight: 600; color: var(--text-dark); }
+
+  .btn-delete-confirm {
+    padding: 0.65rem 1.8rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--red-soft);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-delete-confirm:hover { background: #a93226; }
+
+  /* HINT TOAST */
+  .hint-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-deep);
+    color: var(--cream);
+    padding: 0.7rem 1.4rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 20px var(--shadow-deep);
+    z-index: 200;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+  }
+
+  .hint-toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* EDIT MODE BANNER */
+  .edit-banner {
+    background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.08));
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.82rem;
+    color: #7a5e1a;
+    display: none;
+  }
+
+  .edit-banner.show { display: flex; }
+  .edit-banner-icon { font-size: 1rem; }
+
+  .exit-edit-btn {
+    margin-left: auto;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 6px;
+    background: transparent;
+    color: #7a5e1a;
+    font-size: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .exit-edit-btn:hover { background: rgba(201,168,76,0.15); }
+
+  @media (max-width: 700px) {
+    .form-row { grid-template-columns: 1fr; }
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4) { display: none; }
+    .stats-bar { gap: 1rem; }
+  }
+
+  /* ── ROTATE OVERLAY ── */
+  #rotateOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--green-deep);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+    padding: 2rem;
+  }
+
+  /* Mostra solo su mobile in portrait */
+  @media (max-width: 768px) and (orientation: portrait) {
+    #rotateOverlay { display: flex; }
+  }
+
+  .rotate-phone {
+    width: 72px;
+    height: 72px;
+    animation: rotate-hint 2.2s ease-in-out infinite;
+  }
+
+  @keyframes rotate-hint {
+    0%   { transform: rotate(0deg);  }
+    30%  { transform: rotate(0deg);  }
+    60%  { transform: rotate(90deg); }
+    90%  { transform: rotate(90deg); }
+    100% { transform: rotate(0deg);  }
+  }
+
+  .rotate-text {
+    text-align: center;
+    color: var(--cream);
+  }
+
+  .rotate-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--cream);
+  }
+
+  .rotate-text span {
+    font-size: 0.85rem;
+    color: var(--green-pale);
+    line-height: 1.6;
+  }
+
+  .rotate-leaves {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .rotate-leaf {
+    position: absolute;
+    opacity: 0.07;
+  }
+</style>
+</head>
+<body>
+
+<!-- ROTATE OVERLAY -->
+<div id="rotateOverlay">
+  <div class="rotate-leaves">
+    <svg class="rotate-leaf" style="width:220px;top:-40px;left:-60px;transform:rotate(-20deg)" viewBox="0 0 48 48" fill="none">
+      <path d="M24 2C24 2,44 12,44 28C44 38,35 46,24 48C13 46,4 38,4 28C4 12,24 2,24 2Z" fill="#a8c5a0"/>
+    </svg>
+    <svg class="rotate-leaf" style="width:160px;bottom:-30px;right:-40px;transform:rotate(40deg)" viewBox="0 0 48 48" fill="none">
+      <path d="M24 2C24 2,44 12,44 28C44 38,35 46,24 48C13 46,4 38,4 28C4 12,24 2,24 2Z" fill="#4a8c5c"/>
+    </svg>
+  </div>
+
+  <!-- Icona telefono animata -->
+  <svg class="rotate-phone" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Telefono in portrait -->
+    <rect x="20" y="8" width="32" height="52" rx="5" stroke="#a8c5a0" stroke-width="3" fill="none"/>
+    <circle cx="36" cy="52" r="3" fill="#a8c5a0" opacity="0.6"/>
+    <rect x="30" y="12" width="12" height="2" rx="1" fill="#a8c5a0" opacity="0.5"/>
+    <!-- Freccia di rotazione verso destra (portrait → landscape) -->
+    <path d="M10 38 A26 26 0 0 0 36 64" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <polyline points="30,61 36,64 34,70" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+
+  <div class="rotate-text">
+    <strong>Ruota il dispositivo</strong>
+    <span>Per vedere tutti i campi<br>usa l'app in modalità orizzontale</span>
+  </div>
+</div>
+
+<header>
+  <div class="logo-area" id="logoArea" title="Clicca 5 volte per attivare la modalità editing">
+    <div class="logo-icon">
+      <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Leaf -->
+        <path d="M24 6 C24 6, 38 14, 38 26 C38 34, 32 40, 24 42 C16 40, 10 34, 10 26 C10 14, 24 6, 24 6Z" fill="#4a8c5c" opacity="0.9"/>
+        <path d="M24 42 L24 20" stroke="#a8c5a0" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M24 28 C20 24, 14 22, 12 18" stroke="#a8c5a0" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <path d="M24 34 C28 30, 34 28, 36 24" stroke="#a8c5a0" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <!-- Small tool -->
+        <rect x="30" y="8" width="4" height="10" rx="1" fill="#c9a84c" opacity="0.85" transform="rotate(25, 32, 13)"/>
+        <rect x="28" y="7" width="8" height="2.5" rx="1" fill="#c9a84c" transform="rotate(25, 32, 8)"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-title">Verde &amp; Cura</span>
+      <span class="logo-sub">Archivio Lavori</span>
+    </div>
+  </div>
+  <div class="mode-badge read" id="modeBadge">
+    <span class="dot"></span>
+    <span id="modeText">Sola lettura</span>
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-item">
+    <span class="stat-label">Lavori</span>
+    <span class="stat-value" id="statTotal">0</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-label">Completati</span>
+    <span class="stat-value positive" id="statCompleted">0</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-label">Incasso totale</span>
+    <span class="stat-value money" id="statRevenue">€ 0,00</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-label">Netto totale</span>
+    <span class="stat-value money" id="statNet">€ 0,00</span>
+  </div>
+</div>
+
+<main>
+  <div class="edit-banner" id="editBanner">
+    <span class="edit-banner-icon">✏️</span>
+    <span>Modalità editing attiva — puoi aggiungere, modificare ed eliminare i lavori</span>
+    <button class="exit-edit-btn" onclick="deactivateEditMode()">Esci</button>
+  </div>
+
+  <div class="section-header">
+    <h2 class="section-title">Tutti i lavori</h2>
+    <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap;">
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('tutti', this)">Tutti</button>
+        <button class="filter-btn" onclick="setFilter('da-iniziare', this)">Da iniziare</button>
+        <button class="filter-btn" onclick="setFilter('da-completare', this)">Da completare</button>
+        <button class="filter-btn" onclick="setFilter('completato', this)">Completati</button>
+      </div>
+      <button class="btn-add" id="addBtn" onclick="openAddModal()" style="display:none">
+        ＋ Nuovo lavoro
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Tipologia</th>
+          <th>Stato</th>
+          <th class="money-col">Incasso</th>
+          <th class="money-col">Spese</th>
+          <th class="money-col">Netto</th>
+          <th id="actionsHeader" style="display:none; width:90px;"></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">🌿</div>
+      <div class="empty-text">Nessun lavoro trovato</div>
+      <div class="empty-sub">I lavori aggiunti appariranno qui</div>
+    </div>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nuovo lavoro</span>
+      <button class="modal-close" onclick="closeModal('formModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome cliente *</label>
+        <input type="text" id="fCliente" placeholder="Es. Mario Rossi" />
+      </div>
+      <div class="form-group">
+        <label>Tipologia di lavoro</label>
+        <textarea id="fTipologia" placeholder="Es. Potatura siepi, semina prato, pulizia giardino…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Stato</label>
+        <select id="fStato">
+          <option value="da-iniziare">Da iniziare</option>
+          <option value="da-completare">Da completare</option>
+          <option value="completato">Completato</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Incasso (€)</label>
+          <input type="number" id="fIncasso" placeholder="0,00" min="0" step="0.01" oninput="updateNetPreview()" />
+        </div>
+        <div class="form-group">
+          <label>Spese vive (€)</label>
+          <input type="number" id="fSpese" placeholder="0,00" min="0" step="0.01" oninput="updateNetPreview()" />
+        </div>
+      </div>
+      <div class="calc-preview">
+        <span class="calc-label">💰 Incasso netto</span>
+        <span class="calc-value" id="netPreview">€ 0,00</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('formModal')">Annulla</button>
+      <button class="btn-save" onclick="saveRecord()">Salva lavoro</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <span class="modal-title">Elimina lavoro</span>
+      <button class="modal-close" onclick="closeModal('confirmModal')">✕</button>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-icon">🗑️</div>
+      <p class="confirm-text">Stai per eliminare il lavoro di<br><span class="confirm-name" id="confirmName"></span>.<br>Questa azione non può essere annullata.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('confirmModal')">Annulla</button>
+      <button class="btn-delete-confirm" onclick="confirmDelete()">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<!-- HINT TOAST -->
+<div class="hint-toast" id="hintToast"></div>
+
+<script type="module">
+  // ─── FIREBASE ───────────────────────────────────────────────
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, push, set, remove, update }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAxqgScWEda7AoGWxWkFBCgVFjDvMks5SU",
+    authDomain: "ombrelloni-ee9aa.firebaseapp.com",
+    databaseURL: "https://ombrelloni-ee9aa-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ombrelloni-ee9aa",
+    storageBucket: "ombrelloni-ee9aa.firebasestorage.app",
+    messagingSenderId: "781899782985",
+    appId: "1:781899782985:web:0cb3c1c67cc57ddd9c1898"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  const lavoriRef = ref(db, 'giardinaggio/lavori');
+
+  // ─── DATA ───────────────────────────────────────────────────
+  let records = [];
+  let editMode = false;
+  let currentFilter = 'tutti';
+  let editingId = null;   // Firebase key (stringa)
+  let deletingId = null;
+  let logoClickCount = 0;
+  let logoClickTimer = null;
+
+  // Ascolta il database in tempo reale
+  function loadData() {
+    showLoadingState(true);
+    onValue(lavoriRef, (snapshot) => {
+      records = [];
+      if (snapshot.exists()) {
+        snapshot.forEach(child => {
+          records.push({ _key: child.key, ...child.val() });
+        });
+      }
+      showLoadingState(false);
+      render();
+    }, (error) => {
+      showLoadingState(false);
+      showToast('⚠️ Errore connessione Firebase');
+      console.error(error);
+    });
+  }
+
+  function showLoadingState(loading) {
+    const tbody = document.getElementById('tableBody');
+    if (loading) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--text-light);font-size:0.9rem;">
+        <span style="display:inline-flex;align-items:center;gap:0.6rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+          Connessione a Firebase…
+        </span>
+      </td></tr>`;
+    }
+  }
+
+  async function saveData(rec) {
+    try {
+      if (editingId) {
+        // Modifica record esistente
+        const recRef = ref(db, `giardinaggio/lavori/${editingId}`);
+        const { _key, ...data } = rec;
+        await update(recRef, data);
+      } else {
+        // Nuovo record — push genera chiave univoca Firebase
+        await push(lavoriRef, rec);
+      }
+      return true;
+    } catch(e) {
+      showToast('⚠️ Errore salvataggio');
+      console.error(e);
+      return false;
+    }
+  }
+
+  async function deleteData(key) {
+    try {
+      await remove(ref(db, `giardinaggio/lavori/${key}`));
+      return true;
+    } catch(e) {
+      showToast('⚠️ Errore eliminazione');
+      console.error(e);
+      return false;
+    }
+  }
+
+  // ─── RENDERING ──────────────────────────────────────────────
+  const statusLabel = {
+    'da-iniziare': 'Da iniziare',
+    'da-completare': 'Da completare',
+    'completato': 'Completato'
+  };
+
+  function fmt(n) {
+    return '€ ' + parseFloat(n || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function render() {
+    const filtered = currentFilter === 'tutti'
+      ? records
+      : records.filter(r => r.stato === currentFilter);
+
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = filtered.map(r => {
+        const netto = (r.incasso || 0) - (r.spese || 0);
+        const key = r._key;
+        const actionsCol = editMode ? `
+          <td>
+            <div class="actions">
+              <button class="btn-icon btn-edit" onclick="openEditModal('${key}')" title="Modifica">✏️</button>
+              <button class="btn-icon btn-delete" onclick="openDeleteConfirm('${key}')" title="Elimina">🗑️</button>
+            </div>
+          </td>
+        ` : '';
+        return `
+          <tr>
+            <td><div class="client-name">${escHtml(r.cliente)}</div></td>
+            <td><div class="work-type" title="${escHtml(r.tipologia)}">${escHtml(r.tipologia)}</div></td>
+            <td><span class="status ${r.stato}">${statusLabel[r.stato]}</span></td>
+            <td class="money-col money-pos">${fmt(r.incasso)}</td>
+            <td class="money-col money-neg">${fmt(r.spese)}</td>
+            <td class="money-col money-net">${fmt(netto)}</td>
+            ${actionsCol}
+          </tr>
+        `;
+      }).join('');
+    }
+
+    updateStats();
+    document.getElementById('actionsHeader').style.display = editMode ? '' : 'none';
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function updateStats() {
+    const total = records.length;
+    const completed = records.filter(r => r.stato === 'completato').length;
+    const revenue = records.reduce((s, r) => s + (r.incasso || 0), 0);
+    const net = records.reduce((s, r) => s + ((r.incasso || 0) - (r.spese || 0)), 0);
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statCompleted').textContent = completed;
+    document.getElementById('statRevenue').textContent = fmt(revenue);
+    document.getElementById('statNet').textContent = fmt(net);
+  }
+
+  // ─── FILTER ─────────────────────────────────────────────────
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  // ─── EDIT MODE ──────────────────────────────────────────────
+  function activateEditMode() {
+    editMode = true;
+    document.getElementById('modeBadge').className = 'mode-badge edit';
+    document.getElementById('modeText').textContent = 'Editing';
+    document.getElementById('addBtn').style.display = 'flex';
+    document.getElementById('editBanner').classList.add('show');
+    render();
+    showToast('✅ Modalità editing attivata');
+  }
+
+  function deactivateEditMode() {
+    editMode = false;
+    logoClickCount = 0;
+    document.getElementById('modeBadge').className = 'mode-badge read';
+    document.getElementById('modeText').textContent = 'Sola lettura';
+    document.getElementById('addBtn').style.display = 'none';
+    document.getElementById('editBanner').classList.remove('show');
+    render();
+    showToast('🔒 Modalità sola lettura');
+  }
+
+  // ─── LOGO CLICK ─────────────────────────────────────────────
+  document.getElementById('logoArea').addEventListener('click', () => {
+    if (editMode) return;
+    logoClickCount++;
+    clearTimeout(logoClickTimer);
+    const remaining = 5 - logoClickCount;
+    if (logoClickCount >= 5) {
+      logoClickCount = 0;
+      activateEditMode();
+    } else {
+      showToast(remaining === 1
+        ? '⚡ Ancora 1 clic per attivare l\'editing'
+        : `🌿 Ancora ${remaining} clic per attivare l'editing`);
+      logoClickTimer = setTimeout(() => {
+        logoClickCount = 0;
+      }, 3000);
+    }
+  });
+
+  // ─── MODAL ──────────────────────────────────────────────────
+  function openAddModal() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Nuovo lavoro';
+    document.getElementById('fCliente').value = '';
+    document.getElementById('fTipologia').value = '';
+    document.getElementById('fStato').value = 'da-iniziare';
+    document.getElementById('fIncasso').value = '';
+    document.getElementById('fSpese').value = '';
+    updateNetPreview();
+    openModal('formModal');
+    setTimeout(() => document.getElementById('fCliente').focus(), 300);
+  }
+
+  function openEditModal(key) {
+    const rec = records.find(r => r._key === key);
+    if (!rec) return;
+    editingId = key;
+    document.getElementById('modalTitle').textContent = 'Modifica lavoro';
+    document.getElementById('fCliente').value = rec.cliente;
+    document.getElementById('fTipologia').value = rec.tipologia;
+    document.getElementById('fStato').value = rec.stato;
+    document.getElementById('fIncasso').value = rec.incasso || '';
+    document.getElementById('fSpese').value = rec.spese || '';
+    updateNetPreview();
+    openModal('formModal');
+  }
+
+  function openDeleteConfirm(key) {
+    deletingId = key;
+    const rec = records.find(r => r._key === key);
+    document.getElementById('confirmName').textContent = rec ? rec.cliente : '';
+    openModal('confirmModal');
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Close on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeModal(overlay.id);
+    });
+  });
+
+  // ─── SAVE ───────────────────────────────────────────────────
+  async function saveRecord() {
+    const cliente = document.getElementById('fCliente').value.trim();
+    if (!cliente) {
+      document.getElementById('fCliente').focus();
+      document.getElementById('fCliente').style.borderColor = 'var(--red-soft)';
+      setTimeout(() => document.getElementById('fCliente').style.borderColor = '', 1500);
+      return;
+    }
+
+    const rec = {
+      cliente,
+      tipologia: document.getElementById('fTipologia').value.trim(),
+      stato: document.getElementById('fStato').value,
+      incasso: parseFloat(document.getElementById('fIncasso').value) || 0,
+      spese: parseFloat(document.getElementById('fSpese').value) || 0,
+    };
+
+    const btn = document.querySelector('#formModal .btn-save');
+    btn.textContent = 'Salvataggio…';
+    btn.disabled = true;
+
+    const ok = await saveData(rec);
+
+    btn.textContent = 'Salva lavoro';
+    btn.disabled = false;
+
+    if (ok) {
+      closeModal('formModal');
+      showToast(editingId ? '✅ Lavoro aggiornato' : '✅ Lavoro aggiunto');
+      editingId = null;
+    }
+  }
+
+  // ─── DELETE ─────────────────────────────────────────────────
+  async function confirmDelete() {
+    const btn = document.querySelector('#confirmModal .btn-delete-confirm');
+    btn.textContent = 'Eliminazione…';
+    btn.disabled = true;
+
+    const ok = await deleteData(deletingId);
+
+    btn.textContent = 'Elimina';
+    btn.disabled = false;
+
+    if (ok) {
+      closeModal('confirmModal');
+      showToast('🗑️ Lavoro eliminato');
+    }
+  }
+
+  // ─── NET PREVIEW ────────────────────────────────────────────
+  function updateNetPreview() {
+    const inc = parseFloat(document.getElementById('fIncasso').value) || 0;
+    const spe = parseFloat(document.getElementById('fSpese').value) || 0;
+    const net = inc - spe;
+    document.getElementById('netPreview').textContent = fmt(net);
+    document.getElementById('netPreview').style.color = net >= 0 ? 'var(--green-deep)' : 'var(--red-soft)';
+  }
+
+  // ─── TOAST ──────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('hintToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ─── SERVICE WORKER ─────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW registrato:', reg.scope))
+        .catch(err => console.warn('SW errore:', err));
+    });
+  }
+
+
+  // Esponi le funzioni al DOM (necessario per i type="module")
+  window.setFilter = setFilter;
+  window.openAddModal = openAddModal;
+  window.openEditModal = openEditModal;
+  window.openDeleteConfirm = openDeleteConfirm;
+  window.closeModal = closeModal;
+  window.saveRecord = saveRecord;
+  window.confirmDelete = confirmDelete;
+  window.updateNetPreview = updateNetPreview;
+  window.deactivateEditMode = deactivateEditMode;
+</script>
+</body>
+</html>
